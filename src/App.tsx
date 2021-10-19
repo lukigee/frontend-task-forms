@@ -1,24 +1,20 @@
 import React from "react";
-import { Header, Logo } from "./common";
+import { Logo } from "./common";
 import styled from "styled-components";
 import { SignIn } from "./sign-in-page";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { SignUp } from "./sign-up-page";
 
 const AppContainer = styled.div`
-  box-sizing: border-box;
-  width: 99vw;
-  height: 98vh;
-  background-color: aliceblue;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding: 2rem;
 `;
 
-function App() {
-  let location = useLocation();
+const App = () => {
   return (
     <AppContainer>
       <Logo />
@@ -29,9 +25,12 @@ function App() {
         <Route path="/signup">
           <SignUp />
         </Route>
+        <Route path="/protected">
+          <div>User is on protected page</div>
+        </Route>
       </Switch>
     </AppContainer>
   );
-}
+};
 
 export default App;

@@ -1,73 +1,61 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Header, StyledButton } from "../common";
+import { PrimaryButton, TextField, GuestLayout } from "../common";
 import { emailChecker } from "../utils";
 
-const FormContainer = styled.div`
-  width: 40em;
-  box-sizing: border-box;
-  margin-top: 4em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const FormWrapper = styled.form`
-  width: 25em;
-  border: 2px solid black;
-  box-shadow: 0.2em 0.2em 0.2em black;
-  padding: 2.5rem 2.5rem;
+const Form = styled.form`
   margin-bottom: 1em;
   display: flex;
   flex-direction: column;
 `;
 
-const LabelWrapper = styled.label`
-  width: 100%;
-  height: 5em;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
+const AdditionalInfo = styled.p`
+  font-size: 0.875rem;
+  margin: 0;
 `;
 
-const InputWrapper = styled.input`
-  width: 100%;
-  height: 3em;
-  border: 1px solid black;
-  box-sizing: border-box;
-  margin: 0.5em auto;
-
-  :hover {
-    outline-width: 1px;
-    outline-style: dashed;
-  }
-`;
+interface FormError {
+  emailError: string;
+  passwordError: string;
+}
 
 export const SignIn = () => {
-  const [error, setError] = useState({
-    emailError: false,
-    passwordError: false,
+  const [error, setError] = useState<FormError>({
+    emailError: "",
+    passwordError: "",
   });
   const [fields, setFields] = useState({
     email: "",
     password: "",
   });
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    !error.emailError && alert(JSON.stringify(fields));
+  const noEmptyFields = (): boolean => {
+    return Object.entries(fields).every((item) => item[1] !== "");
   };
 
-  const handleOnBlur = () => {
-    if (!emailChecker(fields.email)) {
-      setError({ ...error, emailError: true });
-    } else {
-      setError({ ...error, emailError: false });
+  const noErrors = (): boolean => {
+    return Object.entries(error).every((item) => item[1] === "");
+  };
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    noErrors() && noEmptyFields() && alert(JSON.stringify(fields));
+  };
+
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
+    const target = e.target;
+    const { email } = fields;
+    switch (target.name) {
+      case "email":
+        !emailChecker(email)
+          ? setError({ ...error, emailError: "Invalid Email address" })
+          : setError({ ...error, emailError: "" });
+        break;
     }
   };
-  const handleOnChange = (e: React.SyntheticEvent) => {
-    const target = e.target as HTMLInputElement;
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const target = e.target;
     if (target.name === "email") {
       setFields({ ...fields, email: target.value });
     } else {
@@ -76,38 +64,34 @@ export const SignIn = () => {
   };
 
   return (
-    <FormContainer>
-      <Header>Sign In</Header>
-      <FormWrapper onSubmit={handleSubmit}>
-        <LabelWrapper>
-          Email address
-          <InputWrapper
-            onChange={handleOnChange}
-            onBlur={handleOnBlur}
-            value={fields.email}
-            placeholder="me@example.com"
-            name="email"
-          />
-        </LabelWrapper>
-        {error.emailError && (
-          <p style={{ color: "red", fontSize: "1.25em", marginTop: "-0.25em" }}>
-            "Invalid Email address"
-          </p>
-        )}
-        <LabelWrapper>
-          Password
-          <InputWrapper
-            name="password"
-            onChange={handleOnChange}
-            value={fields.password}
-          />
-        </LabelWrapper>
-        <StyledButton type="submit">Continue</StyledButton>
-      </FormWrapper>
-      <div>
-        <label>Not our member yet? </label>
+    <GuestLayout title="Sign In">
+      <Form onSubmit={handleSubmit} noValidate>
+        <TextField
+          label="Email address"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={fields.email}
+          placeholder="me@example.com"
+          name="email"
+          type="email"
+          error={error.emailError}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          name="password"
+          onChange={handleChange}
+          value={fields.password}
+        />
+        <PrimaryButton type="submit" disabled>
+          Continue
+        </PrimaryButton>
+      </Form>
+      <AdditionalInfo>
+        Not our member yet?
+        <br />
         <Link to="/signup">Click here to create new Account</Link>
-      </div>
-    </FormContainer>
+      </AdditionalInfo>
+    </GuestLayout>
   );
 };

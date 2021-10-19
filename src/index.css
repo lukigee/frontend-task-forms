@@ -1,0 +1,30 @@
+@import-normalize;
+body {
+  margin: 0;
+  /* background: linear-gradient(
+    -10deg,
+    rgba(91, 97, 217, 1) 10%,
+    rgba(54, 187, 217, 1) 70%,
+    rgba(48, 191, 177, 1) 100%
+  ); */
+  background-color: #f2f9ff;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  color: #656077;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: "PT Sans", sans-serif;
+  color: #414157;
+}
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+a {
+  color: #43d9a6;
+  text-decoration: none;
+}

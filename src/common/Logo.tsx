@@ -18,7 +18,6 @@ const LogoWrapper = styled.div`
   background-color: whitesmoke;
   border: 1px solid black;
   box-shadow: 0.1em 0.1em 0.2em black;
-  margin-top: 5%;
 `;
 export const Logo = () => {
   return (

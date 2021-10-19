@@ -1,15 +1,6 @@
 import styled from "styled-components";
 
-const HeaderWrapper = styled.h2`
-  font-family: cursive;
-  left: -6em;
+export const Header = styled.h1`
   position: relative;
+  margin: 0;
 `;
-
-interface HeaderProps {
-  children?: React.ReactNode;
-}
-
-export const Header = ({ children }: HeaderProps) => {
-  return <HeaderWrapper>{children}</HeaderWrapper>;
-};
