@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { PrimaryButton, TextField, GuestLayout } from "../common";
 import { emailChecker } from "../utils";
 
@@ -21,6 +21,7 @@ interface FormError {
 }
 
 export const SignIn = () => {
+  let history = useHistory();
   const [error, setError] = useState<FormError>({
     emailError: "",
     passwordError: "",
@@ -30,8 +31,8 @@ export const SignIn = () => {
     password: "",
   });
 
-  const noEmptyFields = (): boolean => {
-    return Object.entries(fields).every((item) => item[1] !== "");
+  const everyFieldsEmpty = (): boolean => {
+    return Object.entries(fields).every((item) => item[1] === "");
   };
 
   const noErrors = (): boolean => {
@@ -40,7 +41,8 @@ export const SignIn = () => {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    noErrors() && noEmptyFields() && alert(JSON.stringify(fields));
+    const hasEmptyFields = everyFieldsEmpty();
+    noErrors() && !hasEmptyFields && history.push("/protected");
   };
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
@@ -83,9 +85,7 @@ export const SignIn = () => {
           onChange={handleChange}
           value={fields.password}
         />
-        <PrimaryButton type="submit" disabled>
-          Continue
-        </PrimaryButton>
+        <PrimaryButton type="submit">Continue</PrimaryButton>
       </Form>
       <AdditionalInfo>
         Not our member yet?
