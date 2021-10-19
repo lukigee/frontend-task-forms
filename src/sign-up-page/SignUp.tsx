@@ -25,11 +25,11 @@ export const SignUp = () => {
   });
 
   const everyFieldsEmpty = (): boolean => {
-    return Object.entries(fields).every((item) => item[1] === "");
+    return Object.values(fields).every((value) => value === "");
   };
 
   const noErrors = (): boolean => {
-    return Object.entries(error).every((item) => item[1] === "");
+    return Object.values(error).every((value) => value === "");
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
@@ -46,44 +46,71 @@ export const SignUp = () => {
     }
   };
 
+  const validateEmail = () => {
+    const { email } = fields;
+    if (email.length === 0) {
+      setError({ ...error, emailError: "Email is required" });
+    } else if (!emailChecker(email)) {
+      setError({ ...error, emailError: "Invalid Email address" });
+    } else {
+      setError({ ...error, emailError: "" });
+    }
+  };
+
+  const validateFullName = () => {
+    const { fullname } = fields;
+    if (fullname.length === 0) {
+      setError({ ...error, fullNameError: "Full name is required" });
+    } else if (fullname.split(" ").length === 1) {
+      setError({ ...error, fullNameError: "Missing last name" });
+    } else {
+      setError({ ...error, fullNameError: "" });
+    }
+  };
+
+  const validatePassword = () => {
+    const { password } = fields;
+    if (password.length === 0) {
+      setError({ ...error, passwordError: "Password is required" });
+    } else if (password.length < 8) {
+      setError({ ...error, passwordError: "Password is too short" });
+    } else {
+      setError({ ...error, passwordError: "" });
+    }
+  };
+
+  const validatePasswordConfirmation = () => {
+    const { confirmPassword, password } = fields;
+    if (confirmPassword.length === 0) {
+      setError({
+        ...error,
+        confirmPasswordError: "Please confirm your password",
+      });
+    } else if (confirmPassword !== password) {
+      setError({
+        ...error,
+        confirmPasswordError: "Password does not match",
+      });
+    } else {
+      setError({ ...error, confirmPasswordError: "" });
+    }
+  };
+
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
     const target = e.target;
-    const { email, password, fullname, confirmPassword } = fields;
 
     switch (target.name) {
       case "email":
-        email.length === 0
-          ? setError({ ...error, emailError: "Email is required" })
-          : !emailChecker(email)
-          ? setError({ ...error, emailError: "Invalid Email address" })
-          : setError({ ...error, emailError: "" });
+        validateEmail();
         break;
       case "fullname":
-        fullname.length === 0
-          ? setError({ ...error, fullNameError: "Full name is required" })
-          : fullname.split(" ").length > 1
-          ? setError({ ...error, fullNameError: "" })
-          : setError({ ...error, fullNameError: "Missing last name" });
+        validateFullName();
         break;
       case "password":
-        password.length === 0
-          ? setError({ ...error, passwordError: "Password is required" })
-          : password.length >= 8
-          ? setError({ ...error, passwordError: "" })
-          : setError({ ...error, passwordError: "Password is too short" });
+        validatePassword();
         break;
       case "confirmPassword":
-        confirmPassword.length === 0
-          ? setError({
-              ...error,
-              confirmPasswordError: "Please confirm your password",
-            })
-          : confirmPassword === password
-          ? setError({ ...error, confirmPasswordError: "" })
-          : setError({
-              ...error,
-              confirmPasswordError: "Password does not match",
-            });
+        validatePasswordConfirmation();
         break;
     }
   };
