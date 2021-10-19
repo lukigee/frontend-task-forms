@@ -19,11 +19,11 @@ export const SignIn = () => {
   });
 
   const everyFieldsEmpty = (): boolean => {
-    return Object.entries(fields).every((item) => item[1] === "");
+    return Object.values(fields).every((value) => value === "");
   };
 
   const noErrors = (): boolean => {
-    return Object.entries(error).every((item) => item[1] === "");
+    return Object.values(error).every((value) => value === "");
   };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
