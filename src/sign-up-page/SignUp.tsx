@@ -24,75 +24,115 @@ export const SignUp = () => {
     confirmPassword: "",
   });
 
-  const everyFieldsEmpty = (): boolean => {
-    return Object.values(fields).every((value) => value === "");
-  };
-
-  const noErrors = (): boolean => {
-    return Object.values(error).every((value) => value === "");
-  };
-
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    const hasEmptyFields = everyFieldsEmpty();
-    noErrors() && !hasEmptyFields && history.push("/protected");
-    if (hasEmptyFields) {
-      setError({
-        emailError: "Email is required",
-        passwordError: "Password is required",
-        confirmPasswordError: "Please confirm your password",
-        fullNameError: "Full name is required",
-      });
-    }
-  };
-
   const validateEmail = () => {
     const { email } = fields;
+    let isValid;
     if (email.length === 0) {
-      setError({ ...error, emailError: "Email is required" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        emailError: "Email is required",
+      }));
     } else if (!emailChecker(email)) {
-      setError({ ...error, emailError: "Invalid Email address" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        emailError: "Invalid Email address",
+      }));
     } else {
-      setError({ ...error, emailError: "" });
+      isValid = true;
+      setError((prevErrors) => ({ ...prevErrors, emailError: "" }));
     }
+    return isValid;
   };
 
   const validateFullName = () => {
     const { fullname } = fields;
+    let isValid;
     if (fullname.length === 0) {
-      setError({ ...error, fullNameError: "Full name is required" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        fullNameError: "Full name is required",
+      }));
     } else if (fullname.split(" ").length === 1) {
-      setError({ ...error, fullNameError: "Missing last name" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        fullNameError: "Missing last name",
+      }));
     } else {
-      setError({ ...error, fullNameError: "" });
+      isValid = true;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        fullNameError: "",
+      }));
     }
+    return isValid;
   };
 
   const validatePassword = () => {
     const { password } = fields;
+    let isValid;
     if (password.length === 0) {
-      setError({ ...error, passwordError: "Password is required" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        passwordError: "Password is required",
+      }));
     } else if (password.length < 8) {
-      setError({ ...error, passwordError: "Password is too short" });
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        passwordError: "Password is too short",
+      }));
     } else {
-      setError({ ...error, passwordError: "" });
+      isValid = true;
+      setError((prevErrors) => ({
+        ...prevErrors,
+        passwordError: "",
+      }));
     }
+    return isValid;
   };
 
   const validatePasswordConfirmation = () => {
     const { confirmPassword, password } = fields;
+    let isValid;
+
     if (confirmPassword.length === 0) {
-      setError({
-        ...error,
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
         confirmPasswordError: "Please confirm your password",
-      });
+      }));
     } else if (confirmPassword !== password) {
-      setError({
-        ...error,
+      isValid = false;
+      setError((prevErrors) => ({
+        ...prevErrors,
         confirmPasswordError: "Password does not match",
-      });
+      }));
     } else {
+      isValid = true;
       setError({ ...error, confirmPasswordError: "" });
+    }
+    return isValid;
+  };
+
+  const formValidation = () => {
+    return [
+      validateEmail(),
+      validatePassword(),
+      validateFullName(),
+      validatePasswordConfirmation(),
+    ].every((fieldValidation) => fieldValidation);
+  };
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const isValid = formValidation();
+    if (isValid) {
+      history.push("/protected");
     }
   };
 
