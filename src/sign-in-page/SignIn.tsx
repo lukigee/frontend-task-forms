@@ -1,20 +1,7 @@
 import { useState } from "react";
-import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
-import { PrimaryButton, TextField, GuestLayout } from "../common";
+import { PrimaryButton, TextField, GuestLayout, FormLayout } from "../common";
 import { emailChecker } from "../utils";
-
-const Form = styled.form`
-  margin-bottom: 1em;
-  display: flex;
-  flex-direction: column;
-`;
-
-const AdditionalInfo = styled.p`
-  font-size: 0.875rem;
-  margin: 0;
-`;
-
 interface FormError {
   emailError: string;
   passwordError: string;
@@ -67,7 +54,16 @@ export const SignIn = () => {
 
   return (
     <GuestLayout title="Sign In">
-      <Form onSubmit={handleSubmit} noValidate>
+      <FormLayout
+        onSubmit={handleSubmit}
+        additonalInfo={
+          <>
+            Not our member yet?
+            <br />
+            <Link to="/signup">Click here to create new Account</Link>
+          </>
+        }
+      >
         <TextField
           label="Email address"
           onChange={handleChange}
@@ -86,12 +82,7 @@ export const SignIn = () => {
           value={fields.password}
         />
         <PrimaryButton type="submit">Continue</PrimaryButton>
-      </Form>
-      <AdditionalInfo>
-        Not our member yet?
-        <br />
-        <Link to="/signup">Click here to create new Account</Link>
-      </AdditionalInfo>
+      </FormLayout>
     </GuestLayout>
   );
 };
