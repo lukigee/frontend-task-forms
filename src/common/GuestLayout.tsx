@@ -6,7 +6,6 @@ interface GuestLayoutProps {
   title: string;
 }
 export const Header = styled.h1`
-  position: relative;
   margin: 0;
 `;
 
